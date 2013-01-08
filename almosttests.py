@@ -41,3 +41,30 @@ def test_ne():
 def test_pm_1():
     assert almost(1.234) == 1.233
     assert almost(1.234) == 1.235
+
+
+def test_str():
+    assert almost('Hello') == 'Hello'
+    assert almost('Hello') != 'World'
+
+
+def test_list():
+    import math
+    assert almost([math.pi, math.sqrt(2)]) == [3.142, 1.414]
+    assert almost([math.pi, 'abc', math.sqrt(2)]) == [3.142, 'abc', 1.414]
+    assert almost([math.pi, 'abc', math.sqrt(2)]) != [3.142, 'def', 1.414]
+
+
+def test_dict():
+    import math
+    assert almost({'pi': math.pi, 'sqrt(2)': math.sqrt(2)}) == \
+           {'pi': 3.142, 'sqrt(2)': 1.414}
+    assert almost({'pi': math.pi, 'text': 'abc', 'sqrt(2)': math.sqrt(2)}) == \
+           {'pi': 3.142, 'text': 'abc', 'sqrt(2)': 1.414}
+    assert almost({'pi': math.pi, 'text': 'abc', 'sqrt(2)': math.sqrt(2)}) != \
+           {'pi': 3.142, 'text': 'def', 'sqrt(2)': 1.414}
+
+
+def test_gen():
+    import math
+    assert almost(math.sqrt(x) for x in xrange(2, 5)) == [1.414, 1.732, 2]
