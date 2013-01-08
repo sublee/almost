@@ -68,3 +68,11 @@ def test_dict():
 def test_gen():
     import math
     assert almost(math.sqrt(x) for x in xrange(2, 5)) == [1.414, 1.732, 2]
+
+
+def test_lt_gt_list():
+    import math
+    assert almost([math.pi, math.sqrt(2)]) < [3.142, 1.414, 1]
+    assert not (almost([math.pi, math.sqrt(2)]) > [3.142, 1.414, 1])
+    assert almost([math.pi, math.sqrt(2)]) > [3.142, 1.314, 1]
+    assert not (almost([math.pi, math.sqrt(2)]) < [3.142, 1.314, 1])
