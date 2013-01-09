@@ -67,7 +67,7 @@ def test_dict():
 
 def test_gen():
     import math
-    assert almost(math.sqrt(x) for x in xrange(2, 5)) == [1.414, 1.732, 2]
+    assert almost(math.sqrt(x) for x in range(2, 5)) == [1.414, 1.732, 2]
 
 
 def test_lt_gt_list():
@@ -76,3 +76,38 @@ def test_lt_gt_list():
     assert not (almost([math.pi, math.sqrt(2)]) > [3.142, 1.414, 1])
     assert almost([math.pi, math.sqrt(2)]) > [3.142, 1.314, 1]
     assert not (almost([math.pi, math.sqrt(2)]) < [3.142, 1.314, 1])
+
+
+def test_recursive_list():
+    import math
+    assert almost([[math.pi], [math.sqrt(2)]]) == [[3.142], [1.414]]
+    assert almost([[math.pi], ['abc', math.sqrt(2)]]) == \
+           [[3.142], ['abc', 1.414]]
+    assert almost([[math.pi, 'abc'], [math.sqrt(2)]]) != \
+           [[3.142, 'def'], [1.414]]
+    assert almost([[1], [2]]) <= [[1], [2]]
+    assert not (almost([[1], [2]]) < [[1], [2]])
+    assert almost([[1], [2]]) >= [[1], [2]]
+    assert not (almost([[1], [2]]) > [[1], [2]])
+    assert not (almost([[1], [2]]) != [[1], [2]])
+
+
+def test_ellipsis():
+    assert almost('Hello, world') == 'Hello, ...'
+    assert almost('Hello, ...') == 'Hello, world'
+    assert almost('..., ...') == 'Hello, world'
+    assert almost('..., ...') == '..., world'
+    assert almost('..., ...') == '..., ...'
+    assert almost('...') == 'Hello, world'
+    assert 'world' in almost('Hello, world')
+    assert 'earth' not in almost('Hello, world')
+    assert 'He...' in almost('Hello, world')
+    assert '...ld' in almost('Hello, world')
+    assert 'o, wo' in almost('Hello, world')
+    assert 'world' in almost('Hello, ...')
+    assert 'angel' in almost('Hello, ...')
+    assert 'world' not in almost('Hello, ..')
+    assert almost([['Hello, ...'], ['..., world']]) == \
+           [['Hello, world'], ['Hello, world']]
+    assert almost([['Hello, ...'], ['..., world']]) != \
+           [['Bye, world'], ['Hello, world']]
