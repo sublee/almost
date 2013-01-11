@@ -3,7 +3,7 @@
     almost
     ~~~~~~
 
-    A helper to compare two numbers generously.
+    A helper for approximate comparison.
 
     ::
 
@@ -19,6 +19,12 @@
             assert almost(math.pi) == 3.142
             assert almost(math.sqrt(2)) == 1.414
 
+        def test_random_text():
+            import random
+            def gen_text_with_prefix(prefix):
+                return prefix + str(random.random())[:-5]
+            assert almost(gen_text_with_prefix('@')) == '@...'
+
     :copyright: (c) 2013 by Heungsub Lee
     :license: BSD, see LICENSE for more details.
 """
@@ -33,11 +39,11 @@ import sys
 from types import GeneratorType
 
 
-__version__  = '0.1.1'
+__version__  = '0.1.2'
 
 
 #: A wild card pattern in Regex.
-WILDCARD = '.*'
+WILDCARD = '.*?'
 #: The ``_sre.SRE_Pattern`` class to check normal value types.
 SRE_Pattern = type(re.compile(''))
 #: ``(str, unicode)`` in Python 2, ``str`` in Python 3.

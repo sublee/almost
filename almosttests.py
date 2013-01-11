@@ -111,3 +111,10 @@ def test_ellipsis():
            [['Hello, world'], ['Hello, world']]
     assert almost([['Hello, ...'], ['..., world']]) != \
            [['Bye, world'], ['Hello, world']]
+
+
+def test_random_text():
+    import random
+    def gen_text_with_prefix(prefix):
+        return prefix + str(random.random())[:-5]
+    assert almost(gen_text_with_prefix('@')) == '@...'
