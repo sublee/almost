@@ -59,7 +59,7 @@ setup(
     version=version,
     license='BSD',
     author='Heungsub Lee',
-    author_email='h'r'@'r's'r'u'r'b'r'l'r'.'r'e'r'e',
+    author_email=re.sub('((sub).)(.*)', r'\2@\1.\3', 'sublee'),
     url='http://github.com/sublee/almost',
     description='A helper to compare two numbers generously',
     long_description=__doc__,
