@@ -14,6 +14,15 @@ def test_irrational_number():
     assert almost(math.sqrt(2)) == 1.414
 
 
+def test_special_number():
+    assert almost(float('inf')) == float('inf')
+    assert almost(float('nan')) == float('nan')
+    assert almost(float('inf')) != float('nan')
+    assert almost(float('inf')) != 12345
+    assert almost(float('nan')) != 12345
+    assert almost(float('-inf')) == -float('inf')
+
+
 def test_le_ge():
     assert almost(1 / 3.) <= 0.333
     assert almost(1 / 3.) >= 0.333

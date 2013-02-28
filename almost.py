@@ -39,7 +39,7 @@ import sys
 from types import GeneratorType
 
 
-__version__  = '0.1.2'
+__version__  = '0.1.3'
 
 
 #: A wild card pattern in Regex.
@@ -74,7 +74,10 @@ class Approximate(object):
                 fmt = '%.{0}f'.format(self.precision)
             except AttributeError:  # for Python 2.5
                 fmt = '%%.%df' % self.precision
-            return NormalNumber((fmt % value).replace('.', ''))
+            try:
+                return NormalNumber((fmt % value).replace('.', ''))
+            except ValueError:
+                return chr(0) + str(value) + chr(0)
         elif isinstance(value, String):
             return re.compile(value.replace(self.ellipsis, WILDCARD))
         try:
@@ -95,8 +98,10 @@ class Approximate(object):
     def almost_equals(self, value1, value2):
         normal1 = self.normalize(value1)
         normal2 = self.normalize(value2)
-        #assert type(normal1) is type(normal2)
-        if isinstance(normal1, Number):
+        type1, type2 = type(normal1), type(normal2)
+        if not issubclass(type1, type2) and not issubclass(type2, type1):
+            return False
+        elif isinstance(normal1, Number):
             try:
                 return abs(normal1 - normal2) <= 1
             except TypeError:
