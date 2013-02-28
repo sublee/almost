@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+import math
+import sys
+
 from almost import almost
 
 
@@ -9,7 +12,6 @@ def test_repeating_decimal():
 
 
 def test_irrational_number():
-    import math
     assert almost(math.pi) == 3.142
     assert almost(math.sqrt(2)) == 1.414
 
@@ -21,6 +23,12 @@ def test_special_number():
     assert almost(float('inf')) != 12345
     assert almost(float('nan')) != 12345
     assert almost(float('-inf')) == -float('inf')
+    try:
+        assert almost(float('nan')) == float('-nan')
+    except ValueError:
+        if sys.subversion[0] != 'Jython':
+            raise
+    assert almost(float('nan')) == -float('nan')
 
 
 def test_le_ge():

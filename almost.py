@@ -39,7 +39,7 @@ import sys
 from types import GeneratorType
 
 
-__version__  = '0.1.3'
+__version__  = '0.1.4'
 
 
 #: A wild card pattern in Regex.
@@ -70,14 +70,16 @@ class Approximate(object):
         if isinstance(value, NormalNumber):
             return value
         elif isinstance(value, Number):
+            as_str = str(value)
+            if as_str.endswith('inf'):
+                return chr(0) + as_str + chr(0)
+            elif as_str.endswith('nan'):
+                return '\x01nan\x01'
             try:
                 fmt = '%.{0}f'.format(self.precision)
             except AttributeError:  # for Python 2.5
                 fmt = '%%.%df' % self.precision
-            try:
-                return NormalNumber((fmt % value).replace('.', ''))
-            except ValueError:
-                return chr(0) + str(value) + chr(0)
+            return NormalNumber((fmt % value).replace('.', ''))
         elif isinstance(value, String):
             return re.compile(value.replace(self.ellipsis, WILDCARD))
         try:
