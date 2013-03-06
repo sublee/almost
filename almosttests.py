@@ -2,13 +2,15 @@
 import math
 import sys
 
+from pytest import deprecated_call
+
 from almost import almost
 
 
 def test_repeating_decimal():
     assert almost(1 / 3.) == 0.333
     assert almost(1 / 6.) == 0.167
-    assert almost(3227 / 555., precision=6) == 5.814414
+    assert almost(3227 / 555., prec=6) == 5.814414
 
 
 def test_irrational_number():
@@ -36,8 +38,8 @@ def test_le_ge():
     assert almost(1 / 3.) >= 0.333
     assert almost(1 / 6.) <= 0.167
     assert almost(1 / 6.) >= 0.167
-    assert almost(3227 / 555., precision=6) <= 5.814414
-    assert almost(3227 / 555., precision=6) >= 5.814414
+    assert almost(3227 / 555., prec=6) <= 5.814414
+    assert almost(3227 / 555., prec=6) >= 5.814414
 
 
 def test_lt_gt():
@@ -45,14 +47,14 @@ def test_lt_gt():
     assert not almost(1 / 3.) > 0.333
     assert not almost(1 / 6.) < 0.167
     assert not almost(1 / 6.) > 0.167
-    assert not almost(3227 / 555., precision=6) < 5.814414
-    assert not almost(3227 / 555., precision=6) > 5.814414
+    assert not almost(3227 / 555., prec=6) < 5.814414
+    assert not almost(3227 / 555., prec=6) > 5.814414
 
 
 def test_ne():
     assert not (almost(1 / 3.) != 0.333)
     assert not (almost(1 / 6.) != 0.167)
-    assert not (almost(3227 / 555., precision=6) != 5.814414)
+    assert not (almost(3227 / 555., prec=6) != 5.814414)
 
 
 def test_pm_1():
@@ -135,3 +137,14 @@ def test_random_text():
     def gen_text_with_prefix(prefix):
         return prefix + str(random.random())[:-5]
     assert almost(gen_text_with_prefix('@')) == '@...'
+
+
+def test_deprecated():
+    deprecated_call(almost, 1, precision=2)
+
+
+def test_negative_prec():
+    assert almost(10000, prec=-2) == 10099
+    assert almost(10000, prec=-2) == 9900
+    assert almost(10000, prec=-2) == 10101
+    assert almost(10000, prec=-2) != 9800

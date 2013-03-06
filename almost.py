@@ -12,7 +12,7 @@
         def test_repeating_decimal():
             assert almost(1 / 3.) == 0.333
             assert almost(1 / 6.) == 0.167
-            assert almost(3227 / 555., precision=6) == 5.814414
+            assert almost(3227 / 555., prec=6) == 5.814414
 
         def test_irrational_number():
             import math
@@ -37,9 +37,10 @@ import operator
 import re
 import sys
 from types import GeneratorType
+import warnings
 
 
-__version__  = '0.1.4'
+__version__  = '0.1.5'
 
 
 #: A wild card pattern in Regex.
@@ -57,9 +58,13 @@ class NormalNumber(int):
 
 class Approximate(object):
 
-    def __init__(self, value, precision=3, ellipsis='...'):
+    def __init__(self, value, prec=3, ellipsis='...', precision=None):
+        if precision is not None:
+            prec = precision
+            warnings.warn('Use \'prec\' keyword instead of \'precision\'',
+                          DeprecationWarning)
         self.value = value
-        self.precision = precision
+        self.prec = prec
         self.ellipsis = ellipsis
 
     @property
@@ -70,15 +75,17 @@ class Approximate(object):
         if isinstance(value, NormalNumber):
             return value
         elif isinstance(value, Number):
+            if self.prec < 0:
+                value = value / (10. ** -self.prec)
             as_str = str(value)
             if as_str.endswith('inf'):
                 return chr(0) + as_str + chr(0)
             elif as_str.endswith('nan'):
                 return '\x01nan\x01'
             try:
-                fmt = '%.{0}f'.format(self.precision)
+                fmt = '%.{0}f'.format(max(0, self.prec))
             except AttributeError:  # for Python 2.5
-                fmt = '%%.%df' % self.precision
+                fmt = '%%.%df' % max(0, self.prec)
             return NormalNumber((fmt % value).replace('.', ''))
         elif isinstance(value, String):
             return re.compile(value.replace(self.ellipsis, WILDCARD))
